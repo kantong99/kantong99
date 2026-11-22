@@ -5,16 +5,9 @@ import { Aurora } from '../scenes/aurora';
 import { Hex } from '../scenes/hex';
 import { Ridges } from '../scenes/ridges';
 import { Car } from '../scenes/car';
+import { WIDTH, HEIGHT, FPS, DURATION_IN_FRAMES } from '../constants';
 
-/**
- * Konstanta untuk semua video stock: 3840x2160, 30 fps, 20 detik (600 frame).
- * Loop mulus: frame terakhir = frame awal (t kembali ke 0).
- */
-export const WIDTH = 3840;
-export const HEIGHT = 2160;
-export const FPS = 30;
-export const DURATION_SECONDS = 20;
-export const DURATION_IN_FRAMES = DURATION_SECONDS * FPS; // 600
+export { WIDTH, HEIGHT, FPS, DURATION_SECONDS, DURATION_IN_FRAMES } from '../constants';
 
 /**
  * Daftar semua composition Remotion. Setiap scene diberi ID unik agar

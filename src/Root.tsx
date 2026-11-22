@@ -1,4 +1,3 @@
-import { Root } from 'remotion';
 import { Container } from './compositions';
 
 /**
@@ -6,11 +5,7 @@ import { Container } from './compositions';
  * terdaftar melalui <Container> di src/compositions/index.ts.
  */
 export const AppRoot = () => {
-  return (
-    <Root>
-      <Container />
-    </Root>
-  );
+  return <Container />;
 };
 
 export default AppRoot;

@@ -1,5 +1,5 @@
 import { SceneCanvas } from '../components/SceneCanvas';
-import { DURATION_IN_FRAMES } from '../compositions';
+import { DURATION_IN_FRAMES } from '../constants';
 
 /**
  * Konsep 5: Ridge lines. Garis gelombang berlapis seperti punggung bukit,

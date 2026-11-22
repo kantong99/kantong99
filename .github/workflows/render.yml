@@ -1,11 +1,46 @@
 name: Render Remotion Video
 
 on:
-  workflow_dispatch: # Memungkinkan Anda menjalankan ini manual dari tab Actions
+  workflow_dispatch:
+    inputs:
+      composition:
+        description: "Komposisi yang dirender (all = semua dalam satu run)"
+        type: choice
+        options:
+          - all
+          - silk
+          - terrain
+          - aurora
+          - hex
+          - ridges
+          - car
+        default: all
 
 jobs:
-  render:
+  plan:
     runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.m.outputs.matrix }}
+    steps:
+      - id: m
+        env:
+          COMP: ${{ inputs.composition }}
+        run: |
+          if [ "$COMP" = "all" ]; then
+            LIST='["silk","terrain","aurora","hex","ridges","car"]'
+          else
+            LIST="[\"$COMP\"]"
+          fi
+          echo "matrix={\"comp\":$LIST}" >> "$GITHUB_OUTPUT"
+
+  render:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -19,13 +54,13 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Render Video
-        # Menggunakan ID komposisi yang benar. 
-        # Pastikan ID di Root.tsx Anda adalah "DataExplainer" (atau sesuaikan jika berbeda)
-        run: npx remotion render src/index.ts DataExplainer out/video.mp4 --codec=h264 --crf=20
+      - name: Render ${{ matrix.comp }}
+        run: |
+          mkdir -p out
+          npx remotion render src/index.ts "${{ matrix.comp }}" "out/${{ matrix.comp }}.mp4" --codec=h264 --crf=20
 
       - name: Upload Video Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: rendered-video
-          path: out/video.mp4
+          name: rendered-${{ matrix.comp }}
+          path: out/${{ matrix.comp }}.mp4
